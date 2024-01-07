@@ -1,6 +1,10 @@
 type location
 type search
 type url
+type window
+@val external window: window = "window"
+@send external encodeURIComponent: (window, string) => string = "encodeURIComponent"
+@send external decodeURIComponent: (window, string) => string = "decodeURIComponent"
 @val external location: location = "location"
 @get external getSearch: location => string = "search"
 @set external setSearch: (location, string) => unit = "search"
@@ -31,7 +35,7 @@ let getURLContent = paramName => {
   let param = params->getParam(pname)->Js.toOption
   switch param {
   | None => ""
-  | Some(content) => content
+  | Some(content) => window->decodeURIComponent(content)
   }
 }
 
@@ -42,7 +46,8 @@ let updateURLContent = (~paramName=?, content) => {
   }
   // location->setSearch(pname ++ "=" ++ content)
   let url = location->fullPath->getURL
-  url->setURLSearch(pname ++ "=" ++ content)
+  let encodeContent = window->encodeURIComponent(content)
+  url->setURLSearch(pname ++ "=" ++ encodeContent)
   url->getURLFullPath
 }
 

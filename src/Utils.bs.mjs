@@ -9,14 +9,15 @@ function getURLContent(paramName) {
   if (param == null) {
     return "";
   } else {
-    return param;
+    return window.decodeURIComponent(param);
   }
 }
 
 function updateURLContent(paramName, content) {
   var pname = paramName !== undefined ? paramName : "s";
   var url = new URL(location.href);
-  url.search = pname + "=" + content;
+  var encodeContent = window.encodeURIComponent(content);
+  url.search = pname + "=" + encodeContent;
   return url.href;
 }
 
